@@ -1,6 +1,40 @@
+import { useEffect } from "react";
+import api from "../../services/api";
 import { Container } from "./styles";
+import { createServer } from "miragejs";
+
+createServer({
+    routes() {
+      this.namespace = "api";
+  
+      this.get("/transaction", () => {
+        return [
+          {
+            id: 1,
+            title: "Primeira trnasaciton",
+            amount: 400,
+            type: "deposit",
+            category: "comida",
+            createdAt: new Date(),
+          },
+          {
+            id: 2,
+            title: "segunda transaction",
+            amount: 400,
+            type: "deposit",
+            category: "comida",
+            createdAt: new Date(),
+          },
+        ];
+      });
+    },
+  });
 
 export function TransactionTable(){
+    useEffect(() => {
+        api.get('/transaction')
+        .then(response => console.log(response.data))
+    },[])
     return(
         <Container>
             <table>
