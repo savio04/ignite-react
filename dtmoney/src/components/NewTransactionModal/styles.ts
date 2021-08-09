@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { darken } from "polished";
+import { darken, transparentize } from "polished";
 
-interface TypeButtonProps{
-    isActive:boolean
+interface TypeButtonProps {
+  isActive: boolean;
+  activeColor: "green" | "red";
 }
 
 export const Container = styled.form`
@@ -58,12 +59,20 @@ export const TransactionTypeContainer = styled.div`
   gap: 0.5rem;
 `;
 
+const colors = {
+  green: "#33CC95",
+  red: "#E52e54",
+};
+
 export const TypeButton = styled.button<TypeButtonProps>`
   height: 4rem;
   border: solid 1px #d7d7d7;
   border-radius: 0.25rem;
 
-  background: ${(props) => props.isActive ? '#EEEE': 'transparent'};
+  background: ${(props) =>
+    props.isActive
+      ? transparentize(0.9, colors[props.activeColor])
+      : "transparent"};
 
   display: flex;
   align-items: center;
