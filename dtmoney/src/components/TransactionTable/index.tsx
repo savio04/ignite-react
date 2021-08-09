@@ -1,68 +1,59 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { Container } from "./styles";
-import { createServer } from "miragejs";
 
-createServer({
-    routes() {
-      this.namespace = "api";
-  
-      this.get("/transaction", () => {
-        return [
-          {
-            id: 1,
-            title: "Primeira trnasaciton",
-            amount: 400,
-            type: "deposit",
-            category: "comida",
-            createdAt: new Date(),
-          },
-          {
-            id: 2,
-            title: "segunda transaction",
-            amount: 400,
-            type: "deposit",
-            category: "comida",
-            createdAt: new Date(),
-          },
-        ];
-      });
-    },
-  });
+interface ITransactionsProps {
+  id: number;
+  title: string;
+  amount: number;
+  type: string;
+  category: string;
+  createdAt: string;
+}
 
-export function TransactionTable(){
-    useEffect(() => {
-        api.get('/transaction')
-        .then(response => console.log(response.data))
-    },[])
-    return(
-        <Container>
-            <table>
-                {/* Header da tabela */}
-                <thead>
-                    <tr>
-                        <th>Titulo</th>
-                        <th>Valor</th>
-                        <th>Categoria</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                {/* Corpo da tabela */}
-                <tbody>
-                    <tr>
-                        <td>Desenvolvimento web site</td>
-                        <td className = "deposit">R$ 12000</td>
-                        <td>Emprego</td>
-                        <td>27/05/2009</td>
-                    </tr>
-                    <tr>
-                        <td>Aluguel</td>
-                        <td className = "withdraw">- R$ 12000</td>
-                        <td>Casa</td>
-                        <td>27/05/2009</td>
-                    </tr>
-                </tbody>
-            </table>
-        </Container>
-    )
+export function TransactionTable() {
+  const [transactions, setTransactions] = useState<ITransactionsProps[]>([]);
+
+  useEffect(() => {
+    api
+      .get("/transaction")
+      .then((response) => setTransactions(response.data.transactions));
+  }, []);
+  return (
+    <Container>
+      <table>
+        {/* Header da tabela */}
+        <thead>
+          <tr>
+            <th>Titulo</th>
+            <th>Valor</th>
+            <th>Categoria</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        {/* Corpo da tabela */}
+        <tbody>
+          {transactions.map((transaction) => (
+            <tr key={transaction.id}>
+              <td> {transaction.title} </td>
+              <td className={transaction.type}>
+                {/* Formatando valores em reais */}
+                {new Intl.NumberFormat("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(transaction.amount)}
+              </td>
+              <td> {transaction.category} </td>
+              <td>
+                {/* Formatando datas */}
+                {new Intl.DateTimeFormat("pt-BR").format(
+                  new Date(transaction.createdAt)
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Container>
+  );
 }
