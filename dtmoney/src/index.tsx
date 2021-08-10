@@ -19,6 +19,14 @@ createServer({
           amount: 6000,
           createdAt: new Date("2021-02-12 09:00:00"),
         },
+        {
+          id: 2,
+          title: "Almoço",
+          type: "withdraw",
+          category: "Comida",
+          amount: 110,
+          createdAt: new Date("2021-02-12 09:00:00"),
+        }
       ],
     });
   },
